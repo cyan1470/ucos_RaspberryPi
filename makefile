@@ -1,7 +1,7 @@
 
 ARMGNU ?= arm-none-eabi
 
-INCLUDEPATH ?= "./h"
+INCLUDEPATH ?= "/home/cyan/workspace/ucos/ucos_RaspberryPi/h"
 
 COPS = -Wall -O2 -nostdlib -nostartfiles -ffreestanding -mcpu=arm1176jzf-s -I $(INCLUDEPATH)
 
