@@ -2,6 +2,8 @@
 #ifndef REGS_H_
 #define REGS_H_
 
+#define BIT(x)  (1UL << (x))
+
 #define GPFSEL1 0x20200004
 #define GPSET0  0x2020001C
 #define GPCLR0  0x20200028
@@ -20,6 +22,16 @@
 #define AUX_MU_CNTL_REG 0x20215060
 #define AUX_MU_STAT_REG 0x20215064
 #define AUX_MU_BAUD_REG 0x20215068
+
+//bsc i2c
+#define BSC0_C_REG      0X20205000
+#define BSC0_S_REG      0X20205004
+#define BSC0_DLEN_REG   0X20205008
+#define BSC0_A_REG      0X2020500C
+#define BSC0_FIFO_REG   0X20205010
+#define BSC0_DIV_REG    0X20205004
+#define BSC0_DEL_REG    0X20205008
+#define BSC0_CLKT_REG   0X2020500C
 
 //interrupt control regs
 #define BASE_INTC			(0x2000B200)
