@@ -12,6 +12,15 @@ OBJS = build/startup.o
 OBJS += build/uart.o
 OBJS += build/timer.o
 OBJS += build/interrupts.o
+OBJS += build/i2c.o
+
+OBJS += build/printf.o
+OBJS += build/vsprintf.o
+OBJS += build/div64.o
+OBJS += build/lib1funcs.o
+OBJS += build/ctype.o
+OBJS += build/muldi3.o
+OBJS += build/string.o
 
 OBJS += build/OS_Cpu_a.o
 OBJS += build/OS_Cpu_c.o
@@ -21,7 +30,7 @@ OBJS += build/ucos_ii.o
 OBJS += build/main.o
 OBJS += build/userApp.o
 
-OBJS += lib/libc.a
+#OBJS += lib/libc.a
 OBJS += lib/libgcc.a 
 
 clean :
@@ -43,6 +52,12 @@ build/%.o : port/%.c
 	$(ARMGNU)-gcc $(COPS)  -c -o $@ $<
 		
 build/%.o : bsp/%.c
+	$(ARMGNU)-gcc $(COPS)  -c -o $@ $<
+
+build/%.o : utils/%.c
+	$(ARMGNU)-gcc $(COPS)  -c -o $@ $<
+
+build/%.o : utils/%.S
 	$(ARMGNU)-gcc $(COPS)  -c -o $@ $<
 	
 build/%.o : usrApp/%.c

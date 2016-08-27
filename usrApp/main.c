@@ -1,6 +1,7 @@
 #include "uart.h"
 #include "regs.h"
 #include "timer.h"
+#include "i2c.h"
 #include "ucos/includes.h"
 
 OS_STK  userAppTaskStk1[1000];
@@ -18,6 +19,8 @@ void main()
 	DisableInterrupts();
 
 	timer_init();
+
+    bsci2c_init();
 
 	OSInit();
 

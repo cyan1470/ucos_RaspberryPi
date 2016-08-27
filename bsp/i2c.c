@@ -1,5 +1,6 @@
 #include "regs.h"
 #include "i2c.h"
+#include "uart.h"
 
 extern void PUT32 ( unsigned int, unsigned int );
 extern unsigned int GET32 ( unsigned int );
@@ -40,7 +41,7 @@ extern unsigned int GET32 ( unsigned int );
 #define BSC_S_CLKT_FILED_MASK BIT(9)
 #define BSC_S_CLKT_FILED_SHIFT 9
 
-static void bsc_set_reg_mask(int addr, int reg, int mask, int shift, unsigned int value)
+static void bsc_set_reg_mask(int addr, int mask, int shift, unsigned int value)
 {
   unsigned int v = 0;
   v = GET32(addr);
@@ -53,20 +54,10 @@ static void bsc_set_reg_mask(int addr, int reg, int mask, int shift, unsigned in
 int bsci2c_init(void)
 {
   unsigned int v = 0;
-  uart_string("cyan i2c init");
   v = GET32(BSC0_S_REG);
-  printf("test");
-  uart_string("cyan i2c init");
-  bsc_set_reg_mask(BSC0_C_REG);
+  printf("cyan BSC0_S_REG=%d",v);
+  //bsc_set_reg_mask(BSC0_C_REG);
+  return 0;
 }
-
-
-
-
-
-
-
-
-
 
 
