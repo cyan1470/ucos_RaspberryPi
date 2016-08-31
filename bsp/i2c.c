@@ -1,6 +1,8 @@
 #include "regs.h"
 #include "i2c.h"
 #include "uart.h"
+#include "interrupts.h"
+#include "utils/printf.h"
 
 extern void PUT32 ( unsigned int, unsigned int );
 extern unsigned int GET32 ( unsigned int );
@@ -41,22 +43,53 @@ extern unsigned int GET32 ( unsigned int );
 #define BSC_S_CLKT_FILED_MASK BIT(9)
 #define BSC_S_CLKT_FILED_SHIFT 9
 
+static void bsc_debug_print_status()
+{
+  unsigned int v = 0;
+  v = GET32(BSC0_S_REG);
+  printf("BSC_S_TA_FILED is %d",v && BSC_S_TA_FILED_MASK);
+  printf("BSC_S_DONE_FILED is %d",v && BSC_S_DONE_FILED_MASK);
+  printf("BSC_S_TXW_FILED is %d",v && BSC_S_TXW_FILED_MASK);
+  printf("BSC_S_RXR_FILED is %d",v && BSC_S_RXR_FILED_MASK);
+  printf("BSC_S_TXD_FILED is %d",v && BSC_S_TXD_FILED_MASK);
+  printf("BSC_S_RXD_FILED is %d",v && BSC_S_RXD_FILED_MASK);
+  printf("BSC_S_RXF_FILED is %d",v && BSC_S_RXF_FILED_MASK);
+  printf("BSC_S_ERR_FILED is %d",v && BSC_S_ERR_FILED_MASK);
+  printf("BSC_S_CLKT_FILED is %d",v && BSC_S_CLKT_FILED_MASK);
+
+  return;
+}
+
 static void bsc_set_reg_mask(int addr, int mask, int shift, unsigned int value)
 {
   unsigned int v = 0;
   v = GET32(addr);
+  printf("cyan addr=%d",addr);
+  printf("cyan v=%d",v);
   v &= ~mask;
   v |= ((value << shift) & mask);
   PUT32(addr, v);
+  v = GET32(addr);
+  printf("cyan v=%d",v);
+  return;
+}
+
+static void bsci2cHandler(int nIRQ, void *pParam) {
+  unsigned int v = 0;
+  v = GET32(BSC0_S_REG);
+  if( v && BSC_S_DONE_FILED_MASK )
+  {
+      printf("translate is done");
+  }
   return;
 }
 
 int bsci2c_init(void)
 {
-  unsigned int v = 0;
-  v = GET32(BSC0_S_REG);
-  printf("cyan BSC0_S_REG=%d",v);
-  //bsc_set_reg_mask(BSC0_C_REG);
+  RegisterInterrupt(BCM2835_IRQ_ID_I2C, bsci2cHandler, NULL);
+#define BSC0_C_REG_INIT_VALUE 0x00008710
+  PUT32(BSC0_C_REG,BSC0_C_REG_INIT_VALUE);
+  bsc_debug_print_status();
   return 0;
 }
 

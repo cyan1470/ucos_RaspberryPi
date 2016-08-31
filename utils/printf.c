@@ -1,6 +1,6 @@
-#include "vsprintf.h"
-#include "string.h"
-#include "printf.h"
+#include "utils/vsprintf.h"
+#include "utils/string.h"
+#include "utils/printf.h"
 #include "uart.h"
 
 #define	OUTBUFSIZE	1024
