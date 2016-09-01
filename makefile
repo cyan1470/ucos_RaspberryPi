@@ -31,7 +31,7 @@ OBJS += build/main.o
 OBJS += build/userApp.o
 
 #OBJS += lib/libc.a
-OBJS += lib/libgcc.a 
+#OBJS += lib/libgcc.a 
 
 clean :
 	rm -f build/*.o
