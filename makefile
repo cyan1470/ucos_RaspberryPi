@@ -54,10 +54,10 @@ build/%.o : port/%.c
 build/%.o : bsp/%.c
 	$(ARMGNU)-gcc $(COPS)  -c -o $@ $<
 
-build/%.o : utils/%.c
+build/%.o : lib/%.c
 	$(ARMGNU)-gcc $(COPS)  -c -o $@ $<
 
-build/%.o : utils/%.S
+build/%.o : lib/%.S
 	$(ARMGNU)-gcc $(COPS)  -c -o $@ $<
 	
 build/%.o : usrApp/%.c

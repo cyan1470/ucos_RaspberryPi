@@ -74,7 +74,8 @@ static void bsc_set_reg_mask(int addr, int mask, int shift, unsigned int value)
   return;
 }
 
-static void bsci2cHandler(int nIRQ, void *pParam) {
+static void bsci2cHandler(int nIRQ, void *pParam) 
+{
   unsigned int v = 0;
   v = GET32(BSC0_S_REG);
   if( v && BSC_S_DONE_FILED_MASK )
@@ -92,5 +93,4 @@ int bsci2c_init(void)
   bsc_debug_print_status();
   return 0;
 }
-
 
