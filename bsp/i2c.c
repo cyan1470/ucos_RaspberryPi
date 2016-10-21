@@ -7,90 +7,185 @@
 extern void PUT32 ( unsigned int, unsigned int );
 extern unsigned int GET32 ( unsigned int );
 
-#define BSC_C_READ_FILED_MASK BIT(0)
-#define BSC_C_READ_FILED_SHIFT 0
-#define BSC_C_CLEAR_FILED_MASK (BIT(5) | BIT(4))
-#define BSC_C_CLEAR_FILED_SHIFT 4
-#define BSC_C_ST_FILED_MASK BIT(7)
-#define BSC_C_ST_FILED_SHIFT 7
-#define BSC_C_INTD_FILED_MASK BIT(8)
-#define BSC_C_INTD_FILED_SHIFT 8
-#define BSC_C_INTT_FILED_MASK BIT(9)
-#define BSC_C_INTT_FILED_SHIFT 9
-#define BSC_C_INTR_FILED_MASK BIT(10)
-#define BSC_C_INTR_FILED_SHIFT 10
-#define BSC_C_I2CEN_FILED_MASK BIT(15)
-#define BSC_C_I2CEN_FILED_SHIFT 15
+static void bcm2835_i2c_writel(unsigned int addr, unsigned int value)
+{
+  PUT32(addr,value);
+}
 
-#define BSC_S_TA_FILED_MASK BIT(0)
-#define BSC_S_TA_FILED_SHIFT 0
-#define BSC_S_DONE_FILED_MASK BIT(1)
-#define BSC_S_DONE_FILED_SHIFT 1
-#define BSC_S_TXW_FILED_MASK BIT(2)
-#define BSC_S_TXW_FILED_SHIFT 2
-#define BSC_S_RXR_FILED_MASK BIT(3)
-#define BSC_S_RXR_FILED_SHIFT 3
-#define BSC_S_TXD_FILED_MASK BIT(4)
-#define BSC_S_TXD_FILED_SHIFT 4
-#define BSC_S_RXD_FILED_MASK BIT(5)
-#define BSC_S_RXD_FILED_SHIFT 5
-#define BSC_S_TXE_FILED_MASK BIT(6)
-#define BSC_S_TXE_FILED_SHIFT 6
-#define BSC_S_RXF_FILED_MASK BIT(7)
-#define BSC_S_RXF_FILED_SHIFT 7
-#define BSC_S_ERR_FILED_MASK BIT(8)
-#define BSC_S_ERR_FILED_SHIFT 8
-#define BSC_S_CLKT_FILED_MASK BIT(9)
-#define BSC_S_CLKT_FILED_SHIFT 9
+static int bcm2835_i2c_readl(unsigned int addr)
+{
+  return GET32(addr);
+}
 
-static void bsc_debug_print_status()
+#define BCM2835_I2C_C_READ  (BIT(0))
+#define BCM2835_I2C_C_CLEAR (BIT(5) | BIT(4))
+#define BCM2835_I2C_C_ST    (BIT(7))
+#define BCM2835_I2C_C_INTD  (BIT(8))
+#define BCM2835_I2C_C_INTT  (BIT(9))
+#define BCM2835_I2C_C_INTR  (BIT(10))
+#define BCM2835_I2C_C_I2CEN (BIT(15))
+
+#define BCM2835_I2C_S_TA    (BIT(0))
+#define BCM2835_I2C_S_DONE  (BIT(1))
+#define BCM2835_I2C_S_TXW   (BIT(2))
+#define BCM2835_I2C_S_RXR   (BIT(3))
+#define BCM2835_I2C_S_TXD   (BIT(4))
+#define BCM2835_I2C_S_RXD   (BIT(5))
+#define BCM2835_I2C_S_TXE   (BIT(6))
+#define BCM2835_I2C_S_RXF   (BIT(7))
+#define BCM2835_I2C_S_ERR   (BIT(8))
+#define BCM2835_I2C_S_CLKT  (BIT(9))
+
+static struct bcm2835_i2c_ctrl bcm2835_i2c_dev;
+
+static struct bcm2835_i2c_ctrl *bcm2835_i2c_get_ctrl(void)
+{
+  return &bcm2835_i2c_dev;
+}
+
+static void bcm2835_i2c_debug_print_status()
 {
   unsigned int v = 0;
-  v = GET32(BSC0_S_REG);
-  printf("BSC_S_TA_FILED is %d",v && BSC_S_TA_FILED_MASK);
-  printf("BSC_S_DONE_FILED is %d",v && BSC_S_DONE_FILED_MASK);
-  printf("BSC_S_TXW_FILED is %d",v && BSC_S_TXW_FILED_MASK);
-  printf("BSC_S_RXR_FILED is %d",v && BSC_S_RXR_FILED_MASK);
-  printf("BSC_S_TXD_FILED is %d",v && BSC_S_TXD_FILED_MASK);
-  printf("BSC_S_RXD_FILED is %d",v && BSC_S_RXD_FILED_MASK);
-  printf("BSC_S_RXF_FILED is %d",v && BSC_S_RXF_FILED_MASK);
-  printf("BSC_S_ERR_FILED is %d",v && BSC_S_ERR_FILED_MASK);
-  printf("BSC_S_CLKT_FILED is %d",v && BSC_S_CLKT_FILED_MASK);
+  v = bcm2835_i2c_readl(BSC0_S_REG);
+  printf("BCM2835_I2C_S_TA is %d",v && BCM2835_I2C_S_TA);
+  printf("BCM2835_I2C_S_DONE is %d",v && BCM2835_I2C_S_DONE);
+  printf("BCM2835_I2C_S_TXW is %d",v && BCM2835_I2C_S_TXW);
+  printf("BCM2835_I2C_S_RXR is %d",v && BCM2835_I2C_S_RXR);
+  printf("BCM2835_I2C_S_TXD is %d",v && BCM2835_I2C_S_TXD);
+  printf("BCM2835_I2C_S_RXD is %d",v && BCM2835_I2C_S_RXD);
+  printf("BCM2835_I2C_S_RXF is %d",v && BCM2835_I2C_S_RXF);
+  printf("BCM2835_I2C_S_ERR is %d",v && BCM2835_I2C_S_ERR);
+  printf("BCM2835_I2C_S_CLKT is %d",v && BCM2835_I2C_S_CLKT);
 
   return;
 }
 
-static void bsc_set_reg_mask(int addr, int mask, int shift, unsigned int value)
-{
-  unsigned int v = 0;
-  v = GET32(addr);
-  printf("cyan addr=%d",addr);
-  printf("cyan v=%d",v);
-  v &= ~mask;
-  v |= ((value << shift) & mask);
-  PUT32(addr, v);
-  v = GET32(addr);
-  printf("cyan v=%d",v);
-  return;
-}
+//static int bcm2835_i2c_drain_rxfifo(struct bcm2835_i2c_ctrl *bcm2835_i2c)
+//{
+//
+//}
 
-static void bsci2cHandler(int nIRQ, void *pParam) 
+static int bcm2835_i2c_fill_txfifo(struct bcm2835_i2c_ctrl *bcm2835_i2c)
 {
-  unsigned int v = 0;
-  v = GET32(BSC0_S_REG);
-  if( v && BSC_S_DONE_FILED_MASK )
+  int state = 0;
+
+  while(bcm2835_i2c->buf_remaining)
   {
-      printf("translate is done");
-  }
-  return;
-}
+    state = bcm2835_i2c_readl(BSC0_S_REG);
+    if( state && BCM2835_I2C_S_TXD )
+    {
+      break;
+    }
 
-int bsci2c_init(void)
-{
-  RegisterInterrupt(BCM2835_IRQ_ID_I2C, bsci2cHandler, NULL);
-#define BSC0_C_REG_INIT_VALUE 0x00008710
-  PUT32(BSC0_C_REG,BSC0_C_REG_INIT_VALUE);
-  bsc_debug_print_status();
+    bcm2835_i2c_writel(BSC0_FIFO_REG,*(bcm2835_i2c->buf));
+    bcm2835_i2c->buf++;
+    bcm2835_i2c->buf_remaining--;
+  }
   return 0;
 }
 
+static void bcm2835_i2c_isr(int nIRQ, void *pParam) 
+{
+  unsigned int v = 0;
+
+  //struct bcm2835_i2c_ctrl *bcm2835_i2c = (struct bcm2835_i2c_ctrl *)pParam;
+
+  v = bcm2835_i2c_readl(BSC0_S_REG);
+
+  if( v && ( BCM2835_I2C_S_ERR | BCM2835_I2C_S_CLKT ) )
+  {
+    printf("there are soem errs, please check");
+  }
+  else if( v && BCM2835_I2C_S_RXD )
+  {
+    printf("RXD need to do something");
+  }
+  else if( v && BCM2835_I2C_S_DONE )
+  {
+    printf("translate is done");
+  }
+  else if( v && BCM2835_I2C_S_TXD )
+  {
+    printf("TXD need to do something");
+    //bcm2835_i2c_fill_txfifo(bcm2835_i2c);
+  }
+  else
+  {
+    printf("Oops");
+  }
+
+  return;
+}
+
+static int wait_for_bcm2835_i2c_completion(struct bcm2835_i2c_ctrl *bcm2835_i2c)
+{
+  unsigned int v = 0;
+  while(1)
+  {
+    v = bcm2835_i2c_readl(BSC0_S_REG);
+
+    if( v && ( BCM2835_I2C_S_ERR | BCM2835_I2C_S_CLKT ) )
+    {
+      printf("there are soem errs, please check");
+      break;
+    }
+    else if( v && BCM2835_I2C_S_RXD )
+    {
+      printf("RXD");
+
+    }
+    else if( v && BCM2835_I2C_S_DONE )
+    {
+      printf("translate is done");
+      break;
+    }
+    else if( v && BCM2835_I2C_S_TXD )
+    {
+      printf("TXD need to do something");
+      bcm2835_i2c_fill_txfifo(bcm2835_i2c);
+      continue;
+    }
+    else
+    {
+      printf("Oops");
+      break;
+    }
+  }
+  
+  return 0;
+}
+
+int bcm2835_i2c_xfer(unsigned int slave, char *value, unsigned int count,int write)
+{
+  unsigned int c = 0;
+
+  struct bcm2835_i2c_ctrl *bcm2835_i2c = bcm2835_i2c_get_ctrl();
+  bcm2835_i2c->buf = value;
+  bcm2835_i2c->buf_remaining = count;
+
+  if ( write )
+  {
+    c = BCM2835_I2C_C_INTT;
+    bcm2835_i2c_fill_txfifo(bcm2835_i2c);
+  }
+  else
+  {
+    c = BCM2835_I2C_C_READ | BCM2835_I2C_C_INTR;
+  }
+
+  c |= BCM2835_I2C_C_ST | BCM2835_I2C_C_INTD | BCM2835_I2C_C_I2CEN;
+  bcm2835_i2c_writel(BSC0_A_REG,slave);
+  bcm2835_i2c_writel(BSC0_DLEN_REG,count);
+  bcm2835_i2c_writel(BSC0_C_REG, c);
+
+  wait_for_bcm2835_i2c_completion(bcm2835_i2c);
+  return 0;
+}
+
+int bcm2835_i2c_init(void)
+{
+  struct bcm2835_i2c_ctrl *bcm2835_i2c = bcm2835_i2c_get_ctrl();
+  RegisterInterrupt(BCM2835_IRQ_ID_I2C, bcm2835_i2c_isr, bcm2835_i2c);
+  bcm2835_i2c_debug_print_status();
+  return 0;
+}

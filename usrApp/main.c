@@ -12,6 +12,7 @@ extern void userApp2(void *);
 
 void main()
 {
+	char test = 117;
 	uart_init();
 
 	InitInterruptController();
@@ -20,7 +21,9 @@ void main()
 
 	timer_init();
 
-    bsci2c_init();
+    bcm2835_i2c_init();
+
+    bcm2835_i2c_xfer(0x68, &test, 1, 0);
 
 	OSInit();
 
