@@ -2,7 +2,7 @@
 #include "i2c.h"
 #include "uart.h"
 #include "interrupts.h"
-#include "utils/printf.h"
+#include "lib/printf.h"
 
 extern void PUT32 ( unsigned int, unsigned int );
 extern unsigned int GET32 ( unsigned int );

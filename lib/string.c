@@ -17,8 +17,8 @@
 //#include <linux/types.h>
 //#include <linux/string.h>
 //#include "types.h"
-#include "utils/ctype.h"
-#include "utils/string.h"
+#include "lib/ctype.h"
+#include "lib/string.h"
 
 #ifndef __HAVE_ARCH_STRNICMP
 /**

@@ -29,7 +29,7 @@ Boston, MA 02111-1307, USA.  */
 /* support functions required by the kernel. based on code from gcc-2.95.3 */
 /* I Molton     29/07/01 */
 
-#include "utils/gcclib.h"
+#include "lib/gcclib.h"
 
 #define umul_ppmm(xh, xl, a, b) \
 {register USItype __t0, __t1, __t2;                                     \
